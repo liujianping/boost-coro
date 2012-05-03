@@ -1,2 +1,6 @@
 boost-coro
 ==========
+
+libcoro
+
+libev

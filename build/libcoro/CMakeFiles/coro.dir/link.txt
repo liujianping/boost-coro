@@ -1,0 +1,2 @@
+/usr/bin/ar cr ../lib/libcoro.a  CMakeFiles/coro.dir/coro.o
+/usr/bin/ranlib ../lib/libcoro.a
