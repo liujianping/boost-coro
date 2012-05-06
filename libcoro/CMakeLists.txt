@@ -1,4 +1,4 @@
-PROJECT(brick)
+PROJECT(coroutine)
 
 #包含目录
 

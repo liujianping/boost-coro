@@ -1,5 +1,5 @@
 #the whole CMakeLists.txt for project ttiger
-PROJECT(brick)
+PROJECT(coroutine)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
 
@@ -14,10 +14,7 @@ INCLUDE_DIRECTORIES(
 # lib directories
 LINK_DIRECTORIES(
   ${PROJECT_BINARY_DIR}/lib
-  /usr/local/lib
   /opt/local/lib
-  /usr/lib
-  /opt/lib
 )
 
 ADD_DEFINITIONS(-DCORO_ASM=1)
@@ -32,10 +29,10 @@ ADD_SUBDIRECTORY(libcoro)
 #ADD_SUBDIRECTORY(memory)
 #ADD_SUBDIRECTORY(cothread)
 
-#ADD_SUBDIRECTORY(test)
+ADD_SUBDIRECTORY(test)
 
 
 #INSTALL(DIRECTORY conf/ DESTINATION conf PATTERN ".svn" EXCLUDE)
 #INSTALL(DIRECTORY udps/ DESTINATION udps PATTERN ".svn" EXCLUDE)
-#INSTALL(PROGRAMS scripts/status.sh scripts/stop_prepare.sh DESTINATION scripts
+#INSTALL(PROGRAMS scripts/status.sh DESTINATION scripts
 #        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ)

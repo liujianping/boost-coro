@@ -38,12 +38,12 @@ namespace coroutine{
         void*        next;
         size_t       offset_rd;
         size_t       offset_wr;
-        void*        data;
+        char*        data;
     public:
         vbuf_page_t():
         next(0),offset_rd(0),offset_wr(0),data(0)
         {
-            data = vbuf_allocator.malloc(page_size);
+            data = static_cast<char*>(vbuf_allocator.malloc(page_size));
             assert(data);
         }
 
@@ -52,29 +52,28 @@ namespace coroutine{
             vbuf_allocator.free(data);
         }
 
-        const char* rd_ptr()
+        char* rd_ptr()
         {
-            return static_cast<const char*>(data) + offset_rd;
+            return (data + offset_rd);
         }
 
         void* wr_ptr()
         {
-            return static_cast<char*>(data) + offset_wr;
+            return (data + offset_wr);
         }
 
-        size_t size()
+        size_t wr_size()
         {
             return (page_size - offset_wr);
         }
-
+        size_t rd_size()
+        {
+            return (offset_wr - offset_rd);
+        }
+        
         void reset()
         {
             offset_rd = offset_wr = 0;
-        }
-        
-        size_t length()
-        {
-            return (offset_wr - offset_rd);
         }
     };
     
@@ -116,10 +115,10 @@ namespace coroutine{
 
             while(page != _page_wr)
             {
-                sz += page->length();
+                sz += page->rd_size();
                 page = static_cast<vbuf_page_type*>(page->next);
             }
-            sz += page->length();
+            sz += page->rd_size();
             return sz;
         }
 
@@ -170,13 +169,25 @@ namespace coroutine{
         }
 
         //! //! get can write length
-        size_t size()
+        size_t wr_size()
         {
             size_t sz = 0;
             vbuf_page_type* page = _page_wr;
             while(page)
             {
-                sz += page->size();
+                sz += page->wr_size();
+                page = static_cast<vbuf_page_type*>(page->next);
+            }
+            return sz;
+        }
+        
+        size_t rd_size()
+        {
+            size_t sz = 0;
+            vbuf_page_type* page = _page_rd;
+            while(page)
+            {
+                sz += page->rd_size();
                 page = static_cast<vbuf_page_type*>(page->next);
             }
             return sz;
@@ -198,7 +209,7 @@ namespace coroutine{
                 _page_rd = _page_list;
             }
             assert(_page_wr);
-            size_t cur_sz = size();
+            size_t cur_sz = wr_size();
 
             vbuf_page_type* tail = page_tail();
 
@@ -287,7 +298,7 @@ namespace coroutine{
             {
                 struct iovec iv;
                 iv.iov_base = (void*)page->rd_ptr();
-                iv.iov_len = page->length();
+                iv.iov_len = page->rd_size();
                 vc.push_back(iv);
                 page = static_cast<vbuf_page_type*>(page->next);
                 pages--;
@@ -308,7 +319,7 @@ namespace coroutine{
             {
                 struct iovec iv;
                 iv.iov_base = page->wr_ptr();
-                iv.iov_len = page->size();
+                iv.iov_len = page->wr_size();
                 vc.push_back(iv);
                 page = static_cast<vbuf_page_type*>(page->next);
                 pages--;
@@ -329,19 +340,19 @@ namespace coroutine{
         {
             size_t appended = 0;
             vbuf_page_type* page = vbuf._page_rd;
-            while(page && page != vbuf._page_wr)
+            while(page)
             {
-                appended += this->append(page->rd_ptr(), page->length());
+                appended += this->append(page->rd_ptr(), page->rd_size());
+                if(page == vbuf._page_wr) break;
                 page = static_cast<vbuf_page_type*>(page->next);
             }
-            appended += this->append(page->rd_ptr(), page->length());
             return appended;
         }
 
         //! equal to append
         size_t write(const char* ptr, size_t len)
         {
-            size_t cur_sz = size();
+            size_t cur_sz = wr_size();
             if(len > cur_sz) reserve(len);
 
             size_t want_write = len;
@@ -349,14 +360,15 @@ namespace coroutine{
             while(want_write)
             {
                 assert(_page_wr);
-                size_t wr = (want_write > _page_wr->size() ? _page_wr->size() : want_write);
+                size_t wr = (want_write > _page_wr->wr_size() ? _page_wr->wr_size() : want_write);
                 memcpy(_page_wr->wr_ptr(), (ptr + pos), wr);
                 pos += wr;
                 _page_wr->offset_wr += wr;
                 want_write -= wr;
                 if(want_write) _page_wr = static_cast<vbuf_page_type*>(_page_wr->next);
+                assert(_page_wr);
             }
-            return len;
+            return (len -  want_write);
         }
 
         //! read buffer
@@ -368,7 +380,7 @@ namespace coroutine{
             while(want_read)
             {
                 assert(_page_rd);
-                size_t rd = (want_read > _page_rd->size() ? _page_rd->size() : want_read);
+                size_t rd = (want_read > _page_rd->rd_size() ? _page_rd->rd_size() : want_read);
                 memcpy(ptr + pos, _page_rd->rd_ptr(), rd);
                 pos += rd;
                 _page_rd->offset_rd += rd;
@@ -380,40 +392,46 @@ namespace coroutine{
 
         size_t read_by_line(std::string& line)
         {
-            return read_by_endof_char('\n', line);
+            return read_by_endof_delimer("\n", line);
         }
-
-        size_t read_by_endof_char(char c, std::string& s)
+        
+        vbuf_page_type* find(const char* s)
         {
-            size_t len = length();
-            for(size_t i = 0; i < len; i++)
+            vbuf_page_type* page = _page_rd;
+            bool finded = false;
+            while(page)
             {
-                if(c == *(_page_rd->rd_ptr()))
+                if(strnstr(page->rd_ptr(), s, page->rd_size())) 
                 {
-                    rd_position(1);
-                    return i;
-                }
-                        
-                s.append(_page_rd->rd_ptr(), 1);
-                rd_position(1);
+                    finded = true;
+                    break;
+                }    
+                page = static_cast<vbuf_page_type*>(page->next);
             }
-            return 0;
+            return (finded ? page: 0);        
         }
+        
         size_t read_by_endof_delimer(const char* d, std::string& s)
         {
-            size_t len = length();
-            for(size_t i = 0; i < len; i++)
+            vbuf_page_type* page = find(d);
+            if(!page) return 0;
+            
+            size_t readed = 0;
+            while(_page_rd != page)
             {
-                if(strncmp(d, _page_rd->rd_ptr(),
-                           strlen(d)) == 0)
-                {
-                    rd_position(strlen(d));
-                    return i;
-                }
-                s.append(static_cast<char*>(_page_rd->rd_ptr()), 1);
-                rd_position(1);
+                readed += _page_rd->rd_size();
+                s.append(static_cast<const char*>(_page_rd->rd_ptr()), _page_rd->rd_size());
+                _page_rd = static_cast<vbuf_page_type*>(_page_rd->next);
             }
-            return 0;
+            
+            char* finded = strnstr(page->rd_ptr(), d, page->rd_size());
+            if(!finded) return 0;
+            size_t last = (finded - page->rd_ptr());
+            readed += last;
+            s.append(static_cast<const char*>(_page_rd->rd_ptr()), last);
+            _page_rd->offset_rd += last + strlen(d);
+
+            return readed;
         }
 
         size_t read_by_size(void* ptr, size_t sz)
@@ -443,7 +461,7 @@ namespace coroutine{
             size_t mv_pos = 0;
             while(wt_pos)
             {
-                mv_pos = (wt_pos > _page_rd->size() ? _page_rd->size() : wt_pos);
+                mv_pos = (wt_pos > _page_rd->rd_size() ? _page_rd->rd_size() : wt_pos);
 
                 _page_rd->offset_rd += mv_pos;
                 _page_rd = static_cast<vbuf_page_type*>(_page_rd->next);
@@ -473,7 +491,7 @@ namespace coroutine{
         size_t wr_position(size_t inc)
         {
             if(!_page_wr) return 0;
-            size_t len = size();
+            size_t len = wr_size();
             if(inc >= len)
             {
                 _page_wr->offset_wr = page_size;
@@ -486,7 +504,7 @@ namespace coroutine{
             size_t mv_pos = 0;
             while(wt_pos)
             {
-                mv_pos = (wt_pos > _page_wr->size() ? _page_wr->size() : wt_pos);
+                mv_pos = (wt_pos > _page_wr->wr_size() ? _page_wr->wr_size() : wt_pos);
 
                 _page_wr->offset_wr += mv_pos;
                 _page_wr = static_cast<vbuf_page_type*>(_page_wr->next);
@@ -504,10 +522,10 @@ namespace coroutine{
             vbuf_page_type* page = _page_rd;
             while(page != _page_wr)
             {
-                s.append(page->rd_ptr(), page->length());
+                s.append(page->rd_ptr(), page->rd_size());
                 page = static_cast<vbuf_page_type*>(page->next);
             }
-            s.append((char*)page->rd_ptr(), page->length());
+            s.append((char*)page->rd_ptr(), page->rd_size());
             return s;
         }    
     };
