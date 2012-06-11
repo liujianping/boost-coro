@@ -6,6 +6,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
 # include directories
 INCLUDE_DIRECTORIES(
   ${PROJECT_SOURCE_DIR}/
+  ${PROJECT_SOURCE_DIR}/src
   ${PROJECT_SOURCE_DIR}/libcoro
   ${PROJECT_SOURCE_DIR}/libev
   /opt/local/include
@@ -18,21 +19,41 @@ LINK_DIRECTORIES(
 )
 
 ADD_DEFINITIONS(-DCORO_ASM=1)
-ADD_DEFINITIONS(-Wall  -g)
+ADD_DEFINITIONS(-Wall  -g )
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 SET(CMAKE_INSTALL_PREFIX /opt/local)
 
-ADD_SUBDIRECTORY(libcoro)
-#ADD_SUBDIRECTORY(util)
-#ADD_SUBDIRECTORY(memory)
-#ADD_SUBDIRECTORY(cothread)
+ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(examples)
 
-ADD_SUBDIRECTORY(test)
-
-
-#INSTALL(DIRECTORY conf/ DESTINATION conf PATTERN ".svn" EXCLUDE)
-#INSTALL(DIRECTORY udps/ DESTINATION udps PATTERN ".svn" EXCLUDE)
-#INSTALL(PROGRAMS scripts/status.sh DESTINATION scripts
-#        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ)
+INSTALL(FILES README LICENSE DESTINATION include/boost/coroutine)
+INSTALL(FILES src/coroutine.hpp DESTINATION include/boost/coroutine)
+INSTALL(FILES 
+        src/coasio/acceptor.h 
+        src/coasio/addr.h 
+        src/coasio/connector.h 
+        src/coasio/cosocket.h 
+        DESTINATION include/boost/coroutine/coasio)
+INSTALL(FILES 
+        src/coroutine/coreactor.h 
+        src/coroutine/coroutine.h 
+        src/coroutine/message.h 
+        DESTINATION include/boost/coroutine/coroutine)
+INSTALL(FILES 
+        src/cothread/cothread.h 
+        DESTINATION include/boost/coroutine/cothread)
+INSTALL(FILES 
+        src/libcoro/coro.h 
+        DESTINATION include/boost/coroutine/libcoro)
+INSTALL(FILES 
+        src/util/linked_allocator.h 
+        src/util/list.h 
+        src/util/log.h 
+        src/util/macro.h 
+        src/util/none.h 
+        src/util/singleton.h 
+        src/util/trace.h 
+        src/util/var_buf.h 
+        DESTINATION include/boost/coroutine/util)

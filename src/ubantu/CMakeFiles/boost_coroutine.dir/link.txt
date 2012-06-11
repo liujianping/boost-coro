@@ -1,0 +1,2 @@
+/usr/bin/ar cr lib/libboost_coroutine.a  CMakeFiles/boost_coroutine.dir/libcoro/coro.o CMakeFiles/boost_coroutine.dir/coroutine/coroutine.o CMakeFiles/boost_coroutine.dir/coroutine/coreactor.o CMakeFiles/boost_coroutine.dir/cothread/cothread.o
+/usr/bin/ranlib lib/libboost_coroutine.a

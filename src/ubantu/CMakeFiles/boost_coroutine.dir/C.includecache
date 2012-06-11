@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/liujianping/github/boost-coro/src/libcoro/coro.c
+coro.h
+/home/liujianping/github/boost-coro/src/libcoro/coro.h
+string.h
+-
+stddef.h
+-
+stdlib.h
+-
+stdio.h
+-
+signal.h
+-
+unistd.h
+-
+
+/home/liujianping/github/boost-coro/src/libcoro/coro.h
+ucontext.h
+-
+unistd.h
+-
+setjmp.h
+-
+pthread.h
+-
+
