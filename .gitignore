@@ -3,3 +3,9 @@
 /build/test/
 /build/bin/
 /build/util/
+/build/coroutine/
+/libev/.deps/
+/libev/.libs/
+/build/cothread/
+/build/coasio/
+/src/libcoro/CVS/

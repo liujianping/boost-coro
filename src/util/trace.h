@@ -50,7 +50,6 @@ namespace coroutine{
         boost::mutex _mutex;
     };
 
-#define ENABLE_TRACE
 #ifdef ENABLE_TRACE
     #define trace(fmt, ...) \
                 boost::coroutine::util::singleton<boost::coroutine::util::trace_t\

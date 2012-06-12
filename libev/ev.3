@@ -124,7 +124,7 @@
 .\" ========================================================================
 .\"
 .IX Title "LIBEV 3"
-.TH LIBEV 3 "2012-04-19" "libev-4.11" "libev - high performance full featured event loop"
+.TH LIBEV 3 "2012-05-10" "libev-4.11" "libev - high performance full featured event loop"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -1996,7 +1996,7 @@ within the callback:
 \&     // calculate when the timeout would happen
 \&     ev_tstamp after = last_activity \- ev_now (EV_A) + timeout;
 \&
-\&     // if negative, it means we the timeout already occured
+\&     // if negative, it means we the timeout already occurred
 \&     if (after < 0.)
 \&       {
 \&         // timeout occurred, take action
@@ -2025,7 +2025,7 @@ Otherwise, we now the earliest time at which the timeout would trigger,
 and simply start the timer with this timeout value.
 .Sp
 In other words, each time the callback is invoked it will check whether
-the timeout cocured. If not, it will simply reschedule itself to check
+the timeout occurred. If not, it will simply reschedule itself to check
 again at the earliest time it could time out. Rinse. Repeat.
 .Sp
 This scheme causes more callback invocations (about one every 60 seconds
@@ -2053,7 +2053,7 @@ When there is some activity, simply store the current time in
 .Sp
 When your timeout value changes, then the timeout can be changed by simply
 providing a new value, stopping the timer and calling the callback, which
-will agaion do the right thing (for example, time out immediately :).
+will again do the right thing (for example, time out immediately :).
 .Sp
 .Vb 3
 \&   timeout = new_value;
@@ -3446,7 +3446,7 @@ it by calling \f(CW\*(C`ev_async_send\*(C'\fR, which is thread\- and signal safe
 This functionality is very similar to \f(CW\*(C`ev_signal\*(C'\fR watchers, as signals,
 too, are asynchronous in nature, and signals, too, will be compressed
 (i.e. the number of callback invocations may be less than the number of
-\&\f(CW\*(C`ev_async_sent\*(C'\fR calls). In fact, you could use signal watchers as a kind
+\&\f(CW\*(C`ev_async_send\*(C'\fR calls). In fact, you could use signal watchers as a kind
 of \*(L"global async watchers\*(R" by using a watcher on an otherwise unused
 signal, and \f(CW\*(C`ev_feed_signal\*(C'\fR to signal this watcher from another thread,
 even without knowing which loop owns the signal.
@@ -4062,7 +4062,7 @@ and \*(C+ you can use the \f(CW\*(C`EV_THROW\*(C'\fR macro for this:
 .Ve
 .PP
 The only \s-1API\s0 functions that can currently throw exceptions are \f(CW\*(C`ev_run\*(C'\fR,
-\&\f(CW\*(C`ev_inoke\*(C'\fR, \f(CW\*(C`ev_invoke_pending\*(C'\fR and \f(CW\*(C`ev_loop_destroy\*(C'\fR (the latter
+\&\f(CW\*(C`ev_invoke\*(C'\fR, \f(CW\*(C`ev_invoke_pending\*(C'\fR and \f(CW\*(C`ev_loop_destroy\*(C'\fR (the latter
 because it runs cleanup watchers).
 .PP
 Throwing exceptions in watcher callbacks is only supported if libev itself
