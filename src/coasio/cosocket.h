@@ -1,8 +1,9 @@
-/* 
- * File:   cosocket.h
- * Author: liujianping
- *
- * Created on 2012年5月15日, 下午5:59
+/*! @file cosocket.h
+ *  @brief boost::coasio::cosocket_t header file
+ *  @author liujianping
+ *  @contact rabbit.ljp@gmail.com
+ *  In the file,
+ *      declared the class boost::coasio::cosocket_t
  */
 
 #ifndef BOOST_COASIO_COSOCKET_H
@@ -10,7 +11,6 @@
 
 #include "coasio/addr.h"
 #include "util/var_buf.h"
-#include "util/log.h"
 #include "coroutine/coreactor.h"
 #include "coroutine/coroutine.h"
 

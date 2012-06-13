@@ -1,8 +1,9 @@
-/* 
- * File:   acceptor.h
- * Author: liujianping
- *
- * Created on 2012年5月21日, 下午9:28
+/*! @file acceptor.h
+ *  @brief boost::coasio::acceptor_t header file
+ *  @author liujianping
+ *  @contact rabbit.ljp@gmail.com
+ *  In the file,
+ *      declared the class boost::coasio::acceptor_t
  */
 
 #ifndef BOOST_COASIO_ACCEPTOR_H

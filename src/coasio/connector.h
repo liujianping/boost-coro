@@ -1,10 +1,10 @@
-/* 
- * File:   connector.h
- * Author: liujianping
- *
- * Created on 2012年5月21日, 下午9:28
+/*! @file connector.h
+ *  @brief boost::coasio::connector_t header file
+ *  @author liujianping
+ *  @contact rabbit.ljp@gmail.com
+ *  In the file,
+ *      declared the class boost::coasio::connector_t
  */
-
 
 #ifndef BOOST_COASIO_ACCEPTOR_H
 #define	BOOST_COASIO_ACCEPTOR_H

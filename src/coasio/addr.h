@@ -1,9 +1,11 @@
-/* 
- * File:   addr.h
- * Author: liujianping
- *
- * Created on 2012年5月21日, 下午8:23
+/*! @file addr.h
+ *  @brief boost::coasio::addr_t header file
+ *  @author liujianping
+ *  @contact rabbit.ljp@gmail.com
+ *  In the file,
+ *      declared the class boost::coasio::addr_t
  */
+
 
 #ifndef BOOST_COASIO_ADDR_H
 #define	BOOST_COASIO_ADDR_H
