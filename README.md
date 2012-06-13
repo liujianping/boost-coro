@@ -1,6 +1,18 @@
 boost coroutine another version(0.1)
 contact: rabbit.ljp@gmail.com
 
+Boost.Coroutine Another version Overview:
+
+* use libcoro as the base for the coroutine transfer
+* use libev as the event trigger, and for the network reactor
+* this Version Coroutine Api is similar with the lua
+* this Version Coroutine support message send&recieve at the same thread, just like erlang
+* this Version Coroutine support cothread (cooperative thread, just like coroutine :) )
+* this Version Coroutine use this_coroutine & this_cothread namespace to get the current context, program more flexiable.
+
+wiki: https://github.com/liujianping/boost-coro/wiki
+
+=====================================================
 1. installation
    
    get the source from the github(https://github.com/liujianping/boost-coro)
