@@ -15,7 +15,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "singleton.h"
 namespace boost{
 namespace coroutine{
     namespace util{
@@ -49,16 +48,6 @@ namespace coroutine{
     private:
         boost::mutex _mutex;
     };
-
-#ifdef ENABLE_TRACE
-    #define trace(fmt, ...) \
-                boost::coroutine::util::singleton<boost::coroutine::util::trace_t\
-                >::Instance().out(__FILE__,__LINE__,__PRETTY_FUNCTION__,\
-                fmt, ##__VA_ARGS__)
-#else
-    #define trace(fmt, ...)     
-#endif    
-    
 }}}
 
 #endif	/* TRACE_H */

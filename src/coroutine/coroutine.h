@@ -1,7 +1,6 @@
 /*! @file coroutine.h
  *  @brief boost::coroutine header file
  *  @author liujianping
- *  @date   2012.05.25
  *  @contact rabbit.ljp@gmail.com
  *  In the file,
  *      declared the boost::this_cothread namespace for some api.
@@ -117,6 +116,7 @@ namespace this_cothread{
         boost::coroutine::coro_context_t          _main_context;
         boost::coroutine::coroutine_list_t        _main_childs;
         boost::coroutine::coroutine_base_t*       volatile _current_coroutine;
+        boost::coroutine::util::trace_t           _trace;
         context_allocator_t    _context_allocator;
         coroutine_objpool_t    _coroutine_objpool;
     }this_cothread_data_t;
@@ -129,6 +129,7 @@ namespace this_cothread{
     coroutine_objpool_t* coroutine_objpool();
     
     boost::coroutine::coro_context_t* main_context();
+    boost::coroutine::util::trace_t* dtrace();
 }
 
 namespace this_coroutine{
@@ -350,7 +351,15 @@ namespace coroutine{
             boost::this_cothread::coroutine_objpool()->construct(x, ##__VA_ARGS__)
     #define destroy_coroutine(c) \
             boost::this_cothread::coroutine_objpool()->destroy(static_cast<boost::coroutine::coroutine_t*>(c))    
-    
+
+#ifdef ENABLE_TRACE
+    #define trace(fmt, ...) \
+                boost::this_cothread::dtrace()->out(__FILE__,__LINE__,__FUNCTION__,\
+                fmt, ##__VA_ARGS__)
+#else
+    #define trace(fmt, ...)     
+#endif 
+
 }
 
 

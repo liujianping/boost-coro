@@ -30,7 +30,10 @@ class cosocket_t{
 public:
     static int set_defer_accept(int fd, int secs)
     {
+#ifndef __APPLE__
         return setsockopt(fd, SOL_TCP, TCP_DEFER_ACCEPT, &secs, sizeof(secs)) ;
+#endif
+        return 0;
     }
 
     static int set_non_block(int fd, int flag_nonblock)
@@ -122,10 +125,7 @@ public:
         socklen_t addrlen = sizeof(addr);
         int client = ::accept(_sock_fd, (sockaddr*)&addr, &addrlen);
         if(client == -1)
-        {
-        logerror("socket:<%d> accept failed:%s", _sock_fd, strerror(errno));
-        return -1;
-        }
+            return -1;
         cosocket_t::set_non_block(client, 1);
         sock_addr.assign((const sockaddr*)&addr);
         return client;    

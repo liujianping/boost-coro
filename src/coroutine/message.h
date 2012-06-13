@@ -1,7 +1,6 @@
 /*! @file message.h
  *  @brief boost::coroutine::message header file
  *  @author liujianping
- *  @date   2012.05.25
  *  @contact rabbit.ljp@gmail.com
  *  In the file,
  *      declared the class boost::coroutine::message_t
@@ -32,9 +31,23 @@ namespace coroutine{
     #endif
 
     typedef var_buf_t<MSG_PAGE_SZ, MSG_PAGE_BUFFIZE> vbuf_t;
+    
+    struct message_header_t
+    {
+        unsigned char flag;///< flag of the message
+        //! @union message_t.u
+        //! @brief store fixed variable msg
+        union u{
+            int       i;
+            long      l;
+            char      c;
+        }            value;///< value of the message.u
+        void*        from;
+    };
+    
     //! @class message_t
     //! @brief class of message_t
-    class message_t
+    struct message_t
     {
         BOOST_COROUTINE_NO_COPYABLE(message_t)
     public:
@@ -87,7 +100,6 @@ namespace coroutine{
 
     public:
         unsigned char flag;///< flag of the message
-        vbuf_t        vbuf;///< vbuf of the message, store variable msgs
         //! @union message_t.u
         //! @brief store fixed variable msg
         union u{
@@ -95,7 +107,8 @@ namespace coroutine{
             long      l;
             char      c;
         }            value;///< value of the message.u
-
+        void*        from;
+        vbuf_t       vbuf;///< vbuf of the message, store variable msgs
     };
     
 }}

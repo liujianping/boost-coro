@@ -5,20 +5,33 @@ contact: rabbit.ljp@gmail.com
    
    get the source from the github(https://github.com/liujianping/boost-coro)
 
+1.1 install libev
+
+   $: cd boost-coro 
+   $: cd libev
+   $: ./configure --prefix=/path/to/
+   $: make
+   $: make install
+
+1.2 install boost
+   
+   please reference to the http://www.boost.org
+
+1.3 install boost::coroutine
+   
    $: cd boost-coro
    $: mkdir build
    $: cd build  
-   $: make 
+   $: cmake ..
+   $: make
    $: make install
       
    boost-coro default install path will be at the /opt/local, 
    and only install static lib and header files. if you need dynamic lib, modify
    the CMakeLists.txt.
 
-   examples:
-   
-   if you want to test the examples, uncomment the CMakeLists.txt's subdirectory line
-for the examples, then rebuild the project.
+   if you want to test the examples,get the examples from 
+   the github(https://github.com/liujianping/coro-examples).
 
 2. bugs
 
@@ -29,5 +42,9 @@ for the examples, then rebuild the project.
     
    and you can read some design & implemention ideas from the web: 
    http://tiemaile.com.
+
+3. notes
+    
+   current version only tested at linux system, windows & mac ox not supported yet. 
 
    any suggestion & message would be welcome!

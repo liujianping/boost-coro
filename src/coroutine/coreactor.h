@@ -1,7 +1,6 @@
 /*! @file coreactor.h
  *  @brief coreactor header file
  *  @author liujianping
- *  @date   2012.05.15
  *  @contact rabbit.ljp@gmail.com
  *  In the file,
  *      declared the class boost::coroutine::coreactor_t

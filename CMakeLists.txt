@@ -18,7 +18,14 @@ LINK_DIRECTORIES(
   /opt/local/lib
 )
 
+MESSAGE(STATUS "OS IS:" ${CMAKE_SYSTEM_NAME})
+
+IF(__APPLE__)
+ADD_DEFINITIONS(-DDCORO_SJLJ=1)
+ELSE(__APPLE__)
 ADD_DEFINITIONS(-DCORO_ASM=1)
+ENDIF(__APPLE__)
+
 ADD_DEFINITIONS(-Wall  -g )
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
@@ -26,9 +33,8 @@ SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 SET(CMAKE_INSTALL_PREFIX /opt/local)
 
 ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(examples)
+#ADD_SUBDIRECTORY(examples)
 
-INSTALL(FILES README LICENSE DESTINATION include/boost/coroutine)
 INSTALL(FILES src/coroutine.hpp DESTINATION include/boost/coroutine)
 INSTALL(FILES 
         src/coasio/acceptor.h 
@@ -50,7 +56,6 @@ INSTALL(FILES
 INSTALL(FILES 
         src/util/linked_allocator.h 
         src/util/list.h 
-        src/util/log.h 
         src/util/macro.h 
         src/util/none.h 
         src/util/singleton.h 

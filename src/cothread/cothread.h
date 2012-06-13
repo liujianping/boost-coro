@@ -1,10 +1,14 @@
-/* 
- * File:   cothread.h
- * Author: liujianping
- *
- * Created on 2012年5月7日, 下午3:02
+/*! @file cothread.h
+ *  @brief boost::cothread::cothread_t header file
+ *  @author liujianping
+ *  @contact rabbit.ljp@gmail.com
+ *  In the file,
+ *      declared the boost::this_cothread namespace for some api.
+ *      declared the class boost::cothread::cothread_base_t
+ *      declared the class boost::cothread::cothread_t
+ *      declared the class boost::cothread::cothread_option_t
+ *      define the create_cothread & destroy_cothread macro
  */
-
 #ifndef BOOST_COROUTINE_COTHREAD_H
 #define	BOOST_COROUTINE_COTHREAD_H
 

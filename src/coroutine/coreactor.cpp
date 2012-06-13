@@ -2,7 +2,6 @@
 #include "coroutine/coroutine.h"
 #include "coreactor.h"
 #include <assert.h>
-#include "util/log.h"
 
 namespace boost{
 namespace coroutine{

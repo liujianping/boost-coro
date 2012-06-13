@@ -31,7 +31,13 @@ namespace this_cothread{
         if(!this_cothread_data_key.get())
             this_cothread_data_key.reset(new this_cothread_data_t);
         return boost::addressof(this_cothread_data_key.get()->_main_context);
-    }        
+    }
+    boost::coroutine::util::trace_t* dtrace()
+    {
+        if(!this_cothread_data_key.get())
+            this_cothread_data_key.reset(new this_cothread_data_t);
+        return boost::addressof(this_cothread_data_key.get()->_trace);
+    }
 }    
 namespace this_coroutine{
     
@@ -113,7 +119,6 @@ namespace this_coroutine{
         if(get()) get()->resume_childs(coro);
         else
         {
-            trace("[co:nil] will resume %s's childs", coro ? coro->c_str() : "[co:nil]");
             coroutine_list_t& childs = (coro ? coro->_coro_childs :
                                         this_cothread_data_key.get()->_main_childs);
             size_t loop = childs.size();
@@ -131,6 +136,8 @@ namespace this_coroutine{
                     continue;
                 }
                 
+                trace("%s resume child:%s",(coro ? coro->c_str() : "[co:nil]"),
+                      child->c_str());
                 resume(child);
                 
                 if(child->_stat == CORO_STAT_DONE)
@@ -141,8 +148,6 @@ namespace this_coroutine{
                     continue;
                 }
 
-                trace("%s push back child:%s", 
-                           (coro ? coro->c_str() : "[co:nil]"),child->c_str());
                 childs.push_back(child);    
             }
         }
@@ -228,21 +233,18 @@ namespace coroutine{
         coroutine_base_t* coroutine = static_cast<coroutine_base_t*>(ctx);
         //! set current runing coro
         boost::this_coroutine::set(coroutine);
-        trace("%s execute begin ...", coroutine->c_str());
-
+        
         //! coro self custom function
         if(coroutine->_coro_function) coroutine->_coro_function();
         
         //! after execute the custom function, coro stat (BUSY)
         assert(CORO_STAT_BUSY == coroutine->_stat );
-        trace("%s execute end, begin resume childs ...", coroutine->c_str());
         //! executeing childs coroutines
         while(!coroutine->_coro_childs.empty())
         {
             coroutine->resume_childs();
         }
         coroutine->_stat = CORO_STAT_DONE;
-        trace("%s execute end done.", coroutine->c_str());
         //! tranfer back to the pre context
         coroutine->transfer_pre();
     }
@@ -314,7 +316,6 @@ namespace coroutine{
     //! coro event
     void coroutine_base_t::event_set(stat_t event)
     {
-        trace("%s event set:[%x]", c_str(), event);
         _evet &= ~CORO_EVET_WAIT;
         _evet |= event;
         if(_coro_parent && event != CORO_EVET_WAIT)
@@ -325,7 +326,6 @@ namespace coroutine{
     }
     void coroutine_base_t::event_add(stat_t event)
     {
-        trace("%s event add:[%x]", c_str(), event);
         _evet |= event;
         if(_coro_parent && event != CORO_EVET_WAIT)
         {
@@ -335,7 +335,6 @@ namespace coroutine{
     }
     void coroutine_base_t::event_del(stat_t event)
     {
-        trace("%s event del:[%x]", c_str(), event);
         if((_evet & event) && _coro_parent && event == CORO_EVET_WAIT)
         {
            _coro_parent->event_add(CORO_EVET_CHLD);
@@ -358,7 +357,6 @@ namespace coroutine{
     
     void coroutine_base_t::msg_set(stat_t msg)
     {
-        trace("%s msg set:[%x]", c_str(), msg);
         _msg &= ~CORO_MESG_WAIT;
         _msg |= msg;
         if(_coro_parent && msg != CORO_MESG_WAIT)
@@ -369,7 +367,6 @@ namespace coroutine{
     }
     void coroutine_base_t::msg_add(stat_t msg)
     {
-        trace("%s msg add:[%x]", c_str(), msg);
         _msg |= msg;
         if(_coro_parent && msg != CORO_MESG_WAIT)
         {
@@ -379,7 +376,6 @@ namespace coroutine{
     }
     void coroutine_base_t::msg_del(stat_t msg)
     {
-        trace("%s msg del:[%x]", c_str(), msg);
         if((_msg & CORO_MESG_WAIT) && _coro_parent && msg == CORO_MESG_WAIT)
         {
            _coro_parent->msg_add(CORO_MESG_CHLD);
@@ -412,14 +408,11 @@ namespace coroutine{
         //! coro message
     void  coroutine_base_t::mput(message_ptr_t& msg)
     {
-        trace("%s mput [msg:%p]", c_str(), msg.get());
         msg_del(CORO_MESG_WAIT);
         _coro_messages.push_back(msg);
     }
     void  coroutine_base_t::mbroadcast(message_ptr_t& msg)
     {
-        trace("%s mbroadcast [msg:%p]", c_str(), msg.get());
-
         size_t loop = this->_coro_childs.size();
         while(loop--)
         {
@@ -441,8 +434,6 @@ namespace coroutine{
             }
             msg = _coro_messages.front();
             _coro_messages.pop_front();
-            trace("%s mget [msg:%p]", c_str(), msg.get());
-
             return 1;
         }
         
@@ -450,8 +441,6 @@ namespace coroutine{
         
         msg = _coro_messages.front();
         _coro_messages.pop_front();
-        trace("%s mget [msg:%p]", c_str(), msg.get());
-
         return 1;
     }
 
@@ -539,12 +528,10 @@ namespace coroutine{
         cur->event_del(CORO_EVET_CHLD);
         cur->msg_del(CORO_MESG_CHLD);
         size_t loop = cur->_coro_childs.size();
-        trace("%s will resume %s's childs: %d", c_str(), cur->c_str(), loop);
         while(loop--)
         {
             coroutine_base_t* child = cur->_coro_childs.front();
             cur->_coro_childs.pop_front();
-            trace("%s resume child:%s", c_str(), child->c_str());
             if(child->_stat == CORO_STAT_DONE)
             {
                 trace("%s destroy child:%s", c_str(), child->c_str());
@@ -552,6 +539,7 @@ namespace coroutine{
                 continue;
             }
 
+            trace("%s resume child:%s", c_str(), child->c_str());
             resume(child);
 
             if(child->_stat == CORO_STAT_DONE)
@@ -560,7 +548,6 @@ namespace coroutine{
                 destroy_coroutine(child);
                 continue;
             }
-            trace("%s push back child:%s to %s", c_str(), child->c_str(), cur->c_str());
             cur->_coro_childs.push_back(child);    
         }
 

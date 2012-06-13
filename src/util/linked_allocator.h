@@ -1,10 +1,10 @@
-/* 
- * File:   allocator.h
- * Author: james
- *
- * Created on 2011年8月1日, 下午4:03
+/*! @file linked_allocator.h
+ *  @brief boost::coroutine::util::linked_allocator_t header file
+ *  @author liujianping
+ *  @contact rabbit.ljp@gmail.com
+ *  In the file,
+ *      declared the class boost::coroutine::util::linked_allocator_t
  */
-
 #ifndef ALLOCATOR_H
 #define	ALLOCATOR_H
 

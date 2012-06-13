@@ -41,27 +41,18 @@ class inet_addr_t
 
             if ( sIP != "0.0.0.0" ) {
 
-                    struct hostent ret;
-                    struct hostent * result = &ret;
-                    char buf[1024];
-                    int errop;
-
-    #if defined(__sun__)
-                    if ( gethostbyname_r(host.c_str(), &ret, buf, sizeof(buf), &errop) != 0 )
-    #else
-                    if ( gethostbyname_r(host.c_str(), &ret, buf, sizeof(buf), &result, &errop) != 0 )
-    #endif  // LINUX
+                    struct hostent * result;
+                    result = gethostbyname(host.c_str());
+                    if(!result) sIP = "0.0.0.0";
+                    else
                     {
-                            sIP = "0.0.0.0";
-                    }
-                    else {
-                            if (!result || result->h_addr_list[0] == NULL ) {
-                                    sIP = "0.0.0.0";
-                            }
-                            else {
-                                    char tmp[16];
-                                    sIP = inet_ntop(AF_INET, result->h_addr_list[0], tmp, sizeof(tmp));
-                            }
+                        if (result->h_addr_list[0] == NULL ) {
+                                sIP = "0.0.0.0";
+                        }
+                        else {
+                                char tmp[16];
+                                sIP = inet_ntop(AF_INET, result->h_addr_list[0], tmp, sizeof(tmp));
+                        }
                     }
             }
 

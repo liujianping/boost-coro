@@ -36,22 +36,19 @@ public:
     {
         if(_cosocket_ptr->create(sock_addr.family(), type, flag) < 0)
         {
-            logerror("acceptor_t create socket failed:%s",
-                    strerror(errno));
+            accept_failed();
             return;
         }
 
         if(_cosocket_ptr->bind(sock_addr))
         {
-            logerror("acceptor_t bind socket failed:%s",
-                    strerror(errno));
+            accept_failed();
             return;
         }
 
         if(_cosocket_ptr->listen(5))
         {
-            logerror("acceptor_t listen socket failed:%s",
-                    strerror(errno));
+            accept_failed();
             return;
         }
         cosocket_t::set_non_block(_cosocket_ptr->fd(), 1);
@@ -69,13 +66,12 @@ public:
             }
 
             //! accept user function
-            accept(client, sock_addr_c);
+            accept_succeed(client, sock_addr_c);
         }
     }
     
-    virtual void accept(int client, sock_addr_t& remote_addr){
-        
-    }
+    virtual void accept_failed() = 0;
+    virtual void accept_succeed(int client, sock_addr_t& remote_addr) = 0;
     virtual bool audit(int client, sock_addr_t& remote_addr){
         return false;
     }

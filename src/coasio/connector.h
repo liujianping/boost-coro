@@ -29,23 +29,22 @@ public:
     {
         if(_cosocket_ptr->create(sock_addr.family(), SOCK_STREAM, 0) < 0)
         {
-            logerror("connector_t create socket failed:%s",
-                    strerror(errno));
+            connect_failed();
             return;
         }
 
         if(_cosocket_ptr->connect(sock_addr, timeout))
         {
-            logerror("connector_t connected failed:%s",
-                    strerror(errno));
+            connect_failed();
             return;
         }
 
         //! connected
-        connected();
+        connect_succeed();
     }
     
-    virtual void connected() = 0;
+    virtual void connect_failed() = 0;
+    virtual void connect_succeed() = 0;
 protected:
     boost::coroutine::coreactor_t*     _coreactor;
     cosocket_ptr_t   _cosocket_ptr;

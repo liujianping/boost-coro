@@ -1,8 +1,9 @@
-/* 
- * File:   none.h
- * Author: liujianping
- *
- * Created on 2012年5月4日, 下午2:04
+/*! @file none.h
+ *  @brief boost::coroutine::util::none_mutex_t header file
+ *  @author liujianping
+ *  @contact rabbit.ljp@gmail.com
+ *  In the file,
+ *      declared the class boost::coroutine::util::none_mutex_t
  */
 
 #ifndef NONE_H

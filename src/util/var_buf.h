@@ -10,7 +10,6 @@
 
 #include "util/linked_allocator.h"
 #include "util/none.h"
-#include "util/singleton.h"
 
 #include <sys/types.h>
 #include <sys/uio.h>
@@ -22,7 +21,7 @@
 #include <boost/thread/locks.hpp>
 #include <boost/pool/object_pool.hpp>
 
-
+#ifndef __APPLE__
 static char* strnstr(const char * str1, const char * str2, size_t n)
 {
     char *cp =(char *)str1;
@@ -44,29 +43,29 @@ static char* strnstr(const char * str1, const char * str2, size_t n)
     }
      return 0;
 }
+#endif
 
 namespace boost{
 namespace coroutine{
         
     template<size_t page_size, 
-             size_t page_buffize, 
-             class  locker>
+             size_t page_buffize>
     class vbuf_page_t
     {
         BOOST_COROUTINE_NO_COPYABLE(vbuf_page_t)
                 
         typedef boost::coroutine::memory::linked_allocator_t<page_size, 
-                page_buffize, locker> vbuf_allocator_t;
+                page_buffize> vbuf_allocator_t;
         
-        #define vbuf_allocator boost::coroutine::util::singleton<vbuf_allocator_t>::Instance()
     public:
         void*        next;
         size_t       offset_rd;
         size_t       offset_wr;
         char*        data;
+        vbuf_allocator_t& vbuf_allocator;
     public:
-        vbuf_page_t():
-        next(0),offset_rd(0),offset_wr(0),data(0)
+        vbuf_page_t(vbuf_allocator_t& allocator):
+        next(0),offset_rd(0),offset_wr(0),data(0),vbuf_allocator(allocator)
         {
             data = static_cast<char*>(vbuf_allocator.malloc(page_size));
             assert(data);
@@ -103,21 +102,21 @@ namespace coroutine{
     };
     
     template<size_t page_size = 512,
-             size_t page_buffize = 4,
-             class  page_locker = boost::coroutine::util::none_mutex_t>
+             size_t page_buffize = 4>
     class var_buf_t
     {
         BOOST_COROUTINE_NO_COPYABLE(var_buf_t)
-        typedef page_locker mutex_type;
-        typedef var_buf_t<page_size, page_buffize, mutex_type> var_buf_type;
-        typedef vbuf_page_t<page_size, page_buffize, mutex_type> vbuf_page_type;
+        typedef var_buf_t<page_size, page_buffize> var_buf_type;
+        typedef vbuf_page_t<page_size, page_buffize> vbuf_page_type;
         typedef boost::object_pool<vbuf_page_type> vpage_allocator_t;
+        typedef boost::coroutine::memory::linked_allocator_t<page_size, 
+                page_buffize> vbuf_allocator_t;
     private:
         vbuf_page_type* _page_list;
         vbuf_page_type* _page_rd;
         vbuf_page_type* _page_wr;
-        mutex_type      _mutex;
         vpage_allocator_t  _page_allocator;
+        vbuf_allocator_t   _vbuf_allocator;
     public:
         //! constructor
         var_buf_t():
@@ -131,8 +130,7 @@ namespace coroutine{
         {
            clear();
         }
-
-        //! //! get can read length
+        //! readable length
         size_t length()
         {
             size_t sz = 0;
@@ -227,11 +225,7 @@ namespace coroutine{
 
             if(!_page_wr || (!_page_rd && !_page_list))
             {
-                {
-                    boost::lock_guard<mutex_type> guard(_mutex);
-                    _page_list = _page_allocator.construct();
-                }
-                
+                _page_list = _page_allocator.construct(_vbuf_allocator);
                 _page_wr = _page_list;
                 _page_rd = _page_list;
             }
@@ -243,11 +237,7 @@ namespace coroutine{
             vbuf_page_type* npage;
             while(cur_sz < sz)
             {
-                {
-                    boost::lock_guard<mutex_type> guard(_mutex);
-                    npage = _page_allocator.construct();
-                }
-                
+                npage = _page_allocator.construct(_vbuf_allocator);
                 assert(npage);
                 if(0 == tail)
                     tail = npage;
@@ -266,11 +256,7 @@ namespace coroutine{
             while(head && head != _page_rd)
             {
                 _page_list = static_cast<vbuf_page_type*>(head->next);
-                
-                {
-                   boost::lock_guard<mutex_type> guard(_mutex);
-                   _page_allocator.destroy(head);
-                }
+                _page_allocator.destroy(head);
                 
                 head = _page_list;
             }
@@ -282,10 +268,7 @@ namespace coroutine{
             while(head)
             {
                 _page_list = static_cast<vbuf_page_type*>(head->next);
-                {
-                   boost::lock_guard<mutex_type> guard(_mutex);
-                   _page_allocator.destroy(head);
-                }
+                _page_allocator.destroy(head);
                 head = _page_list;
             }
             _page_rd = 0;

@@ -15,7 +15,7 @@ LINK_DIRECTORIES(
   /opt/local/lib
 )
 
-ADD_DEFINITIONS(-DCORO_ASM=1)
+ADD_DEFINITIONS(-DCORO_ASM=1 -DENABLE_TRACE)
 ADD_DEFINITIONS(-Wall  -g )
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
@@ -24,9 +24,6 @@ SET(CMAKE_INSTALL_PREFIX /opt/local)
 
 #包含依赖
 SET(LIBRARYS pthread ev boost_system)
-
-ADD_DEFINITIONS(-DCORO_ASM=1)
-ADD_DEFINITIONS(-Wall)
 
 ADD_LIBRARY(boost_coroutine STATIC 
             libcoro/coro.c 

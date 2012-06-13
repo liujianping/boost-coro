@@ -1,8 +1,9 @@
-/* 
- * File:   list.h
- * Author: liujianping
- *
- * Created on 2012年5月8日, 下午11:02
+/*! @file list.h
+ *  @brief boost::coroutine::util::list_t<> header file
+ *  @author liujianping
+ *  @contact rabbit.ljp@gmail.com
+ *  In the file,
+ *      declared the class boost::coroutine::util::list_t<TYPE>
  */
 
 #ifndef BOOST_COROUTINE_LIST_H

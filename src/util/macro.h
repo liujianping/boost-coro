@@ -1,8 +1,7 @@
-/* 
- * File:   macro.h
- * Author: liujianping
- *
- * Created on 2012年5月4日, 下午2:47
+/*! @file macro.h
+ *  @brief MACRO define header file
+ *  @author liujianping
+ *  @contact rabbit.ljp@gmail.com
  */
 
 #ifndef MACRO_H
