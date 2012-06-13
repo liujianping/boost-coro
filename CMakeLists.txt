@@ -58,7 +58,6 @@ INSTALL(FILES
         src/util/list.h 
         src/util/macro.h 
         src/util/none.h 
-        src/util/singleton.h 
         src/util/trace.h 
         src/util/var_buf.h 
         DESTINATION include/boost/coroutine/util)

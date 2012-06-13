@@ -32,7 +32,7 @@ namespace coroutine{
 
     typedef var_buf_t<MSG_PAGE_SZ, MSG_PAGE_BUFFIZE> vbuf_t;
     
-    struct message_header_t
+    typedef struct message_header_t
     {
         unsigned char flag;///< flag of the message
         //! @union message_t.u
@@ -43,11 +43,11 @@ namespace coroutine{
             char      c;
         }            value;///< value of the message.u
         void*        from;
-    };
+    }message_header_t;
     
     //! @class message_t
     //! @brief class of message_t
-    struct message_t
+    class message_t
     {
         BOOST_COROUTINE_NO_COPYABLE(message_t)
     public:
