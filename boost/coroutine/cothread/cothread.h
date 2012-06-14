@@ -21,8 +21,9 @@
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 #include <boost/utility.hpp> 
-#include "util/macro.h"
-#include "util/list.h"
+
+#include <boost/coroutine/util/macro.h>
+#include <boost/coroutine/util/list.h>
 
 namespace boost{
 namespace cothread{

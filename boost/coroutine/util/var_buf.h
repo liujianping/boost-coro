@@ -8,8 +8,9 @@
 #ifndef BOOST_COROUTINE_VAR_BUF_H
 #define	BOOST_COROUTINE_VAR_BUF_H
 
-#include "util/linked_allocator.h"
-#include "util/none.h"
+#include <boost/coroutine/util/linked_allocator.h>
+#include <boost/coroutine/util/none.h>
+#include <boost/coroutine/util/macro.h>
 
 #include <sys/types.h>
 #include <sys/uio.h>

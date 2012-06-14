@@ -1,4 +1,4 @@
-#include "cothread/cothread.h"
+#include <boost/coroutine/cothread/cothread.h>
 
 namespace boost{
 

@@ -1,6 +1,5 @@
-#include "coroutine/coreactor.h"
-#include "coroutine/coroutine.h"
-#include "coreactor.h"
+#include <boost/coroutine/coroutine/coreactor.h>
+#include <boost/coroutine/coroutine/coroutine.h>
 #include <assert.h>
 
 namespace boost{

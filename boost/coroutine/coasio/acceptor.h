@@ -9,9 +9,9 @@
 #ifndef BOOST_COASIO_ACCEPTOR_H
 #define	BOOST_COASIO_ACCEPTOR_H
 
-#include "coroutine/coreactor.h"
-#include "coasio/cosocket.h"
-#include "coasio/addr.h"
+#include <boost/coroutine/coroutine/coreactor.h>
+#include <boost/coroutine/coasio/cosocket.h>
+#include <boost/coroutine/coasio/addr.h>
 
 #include <sys/socket.h>
 

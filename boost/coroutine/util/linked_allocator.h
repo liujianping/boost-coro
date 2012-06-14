@@ -11,7 +11,7 @@
 #include <stddef.h>
 #include <assert.h>
 #include <boost/thread/locks.hpp>
-#include "util/none.h"
+#include <boost/coroutine/util/none.h>
 
 namespace boost{
 namespace coroutine{

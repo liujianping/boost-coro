@@ -10,7 +10,7 @@
 #ifndef BOOST_COROUTINE_MESSAGE_H
 #define	BOOST_COROUTINE_MESSAGE_H
 
-#include "util/var_buf.h"
+#include <boost/coroutine/util/var_buf.h>
 #include <string>
 
 namespace boost{
@@ -20,7 +20,7 @@ namespace coroutine{
     #define MSG_LONG  0x02
     #define MSG_CHAR  0x04
     #define MSG_VBUF  0x08
-    #define MSG_TYPE  0x10
+    #define MSG_FROM  0x10
     
     #ifndef MSG_PAGE_SZ
     #define MSG_PAGE_SZ 128

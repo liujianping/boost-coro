@@ -9,10 +9,10 @@
 #ifndef BOOST_COASIO_COSOCKET_H
 #define	BOOST_COASIO_COSOCKET_H
 
-#include "coasio/addr.h"
-#include "util/var_buf.h"
-#include "coroutine/coreactor.h"
-#include "coroutine/coroutine.h"
+#include <boost/coroutine/coroutine/coreactor.h>
+#include <boost/coroutine/coroutine/coroutine.h>
+#include <boost/coroutine/coasio/addr.h>
+#include <boost/coroutine/util/var_buf.h>
 
 #include <assert.h>
 #include <errno.h>

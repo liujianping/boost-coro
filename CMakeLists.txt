@@ -6,9 +6,6 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
 # include directories
 INCLUDE_DIRECTORIES(
   ${PROJECT_SOURCE_DIR}/
-  ${PROJECT_SOURCE_DIR}/src
-  ${PROJECT_SOURCE_DIR}/libcoro
-  ${PROJECT_SOURCE_DIR}/libev
   /opt/local/include
 )
 
@@ -32,32 +29,31 @@ SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 SET(CMAKE_INSTALL_PREFIX /opt/local)
 
-ADD_SUBDIRECTORY(src)
-#ADD_SUBDIRECTORY(examples)
+ADD_SUBDIRECTORY(boost/coroutine)
 
-INSTALL(FILES src/coroutine.hpp DESTINATION include/boost/coroutine)
+INSTALL(FILES boost/coroutine/coroutine.hpp DESTINATION include/boost/coroutine)
 INSTALL(FILES 
-        src/coasio/acceptor.h 
-        src/coasio/addr.h 
-        src/coasio/connector.h 
-        src/coasio/cosocket.h 
+        boost/coroutine/coasio/acceptor.h 
+        boost/coroutine/coasio/addr.h 
+        boost/coroutine/coasio/connector.h 
+        boost/coroutine/coasio/cosocket.h 
         DESTINATION include/boost/coroutine/coasio)
 INSTALL(FILES 
-        src/coroutine/coreactor.h 
-        src/coroutine/coroutine.h 
-        src/coroutine/message.h 
+        boost/coroutine/coroutine/coreactor.h 
+        boost/coroutine/coroutine/coroutine.h 
+        boost/coroutine/coroutine/message.h 
         DESTINATION include/boost/coroutine/coroutine)
 INSTALL(FILES 
-        src/cothread/cothread.h 
+        boost/coroutine/cothread/cothread.h 
         DESTINATION include/boost/coroutine/cothread)
 INSTALL(FILES 
-        src/libcoro/coro.h 
+        boost/coroutine/libcoro/coro.h 
         DESTINATION include/boost/coroutine/libcoro)
 INSTALL(FILES 
-        src/util/linked_allocator.h 
-        src/util/list.h 
-        src/util/macro.h 
-        src/util/none.h 
-        src/util/trace.h 
-        src/util/var_buf.h 
+        boost/coroutine/util/linked_allocator.h 
+        boost/coroutine/util/list.h 
+        boost/coroutine/util/macro.h 
+        boost/coroutine/util/none.h 
+        boost/coroutine/util/trace.h 
+        boost/coroutine/util/var_buf.h 
         DESTINATION include/boost/coroutine/util)

@@ -387,7 +387,7 @@ coro_init (void *args_)
   void *arg = args->arg;
 
   pthread_mutex_lock (&coro_mutex);
-  ww
+
   /* we try to be good citizens and use deferred cancellation and cleanup handlers */
   pthread_cleanup_push (mutex_unlock_wrapper, &coro_mutex);
     coro_transfer (args->self, args->main);

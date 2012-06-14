@@ -13,12 +13,13 @@
 #ifndef BOOST_COROUTINE_COROUTINE_H
 #define	BOOST_COROUTINE_COROUTINE_H
 
-#include "libcoro/coro.h"
-#include "util/macro.h"
-#include "util/list.h"
-#include "util/linked_allocator.h"
-#include "util/trace.h"
-#include "coroutine/message.h"
+#include <boost/coroutine/libcoro/coro.h>
+#include <boost/coroutine/util/macro.h>
+#include <boost/coroutine/util/linked_allocator.h>
+#include <boost/coroutine/util/trace.h>
+#include <boost/coroutine/util/list.h>
+#include <boost/coroutine/coroutine/message.h>
+
 #include <pthread.h>
 #include <assert.h>
 #include <list>

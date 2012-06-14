@@ -9,7 +9,7 @@
 #ifndef NONE_H
 #define	NONE_H
 
-#include "util/macro.h"
+#include <boost/coroutine/util/macro.h>
 
 namespace boost{
 namespace coroutine{

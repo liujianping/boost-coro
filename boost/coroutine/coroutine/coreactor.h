@@ -13,8 +13,10 @@
 #include <event.h>    
 #include <boost/pool/object_pool.hpp>
 #include <boost/utility.hpp>
-#include "util/macro.h"
-#include "util/linked_allocator.h"
+
+#include <boost/coroutine/util/macro.h>
+#include <boost/coroutine/util/linked_allocator.h>
+
 #include <map>
 namespace boost{
 namespace coroutine{

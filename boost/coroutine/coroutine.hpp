@@ -27,21 +27,20 @@
 
 #ifndef BOOST_COROUTINE_ANOTHER_V
 #define	BOOST_COROUTINE_ANOTHER_V
-#include "coroutine/message.h"
-#include "coroutine/coroutine.h"
-#include "coroutine/coreactor.h"
-#include "cothread/cothread.h"
-#include "coasio/addr.h"
-#include "coasio/cosocket.h"
-#include "coasio/acceptor.h"
-#include "coasio/connector.h"
-#include "util/linked_allocator.h"
-#include "util/list.h"
-#include "util/macro.h"
-#include "util/none.h"
-#include "util/trace.h"
-#include "util/var_buf.h"
-#include "libcoro/coro.h"
+#include <boost/coroutine/coroutine/message.h>
+#include <boost/coroutine/coroutine/coroutine.h>
+#include <boost/coroutine/coroutine/coreactor.h>
+#include <boost/coroutine/cothread/cothread.h>
+#include <boost/coroutine/coasio/addr.h>
+#include <boost/coroutine/coasio/cosocket.h>
+#include <boost/coroutine/coasio/acceptor.h>
+#include <boost/coroutine/coasio/connector.h>
+#include <boost/coroutine/util/linked_allocator.h>
+#include <boost/coroutine/util/list.h>
+#include <boost/coroutine/util/macro.h>
+#include <boost/coroutine/util/none.h>
+#include <boost/coroutine/util/trace.h>
+#include <boost/coroutine/util/var_buf.h>
 
 /*! @namespace boost
  *  @brief     namespace of boost
